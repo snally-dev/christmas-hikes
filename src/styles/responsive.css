@@ -1,0 +1,286 @@
+@media (min-width: 1080px) {
+  .app-shell {
+    padding-bottom: 0;
+    padding-left: 92px;
+  }
+  .site-header {
+    padding-left: 28px;
+  }
+  .bottom-nav {
+    top: 74px;
+    right: auto;
+    width: 92px;
+    min-height: 0;
+    padding: 20px 7px;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: #0b2a22;
+    border: 0;
+    box-shadow: none;
+  }
+  .bottom-nav a {
+    width: 78px;
+    min-width: 0;
+    flex: 0 0 70px;
+    color: #b6c6bc;
+  }
+  .bottom-nav a.is-active {
+    color: #f2dfaa;
+    background: rgba(255, 255, 255, 0.09);
+  }
+}
+@media (max-width: 900px) {
+  .page {
+    width: min(100% - 30px, 760px);
+    padding-top: 30px;
+  }
+  .adventure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero-panel {
+    padding: 38px 35px 25px;
+  }
+  .detail-hero {
+    grid-template-columns: minmax(220px, 0.7fr) 1fr;
+    gap: 25px;
+    padding: 27px;
+  }
+  .detail-columns {
+    grid-template-columns: 1fr;
+  }
+  .field-grid--three {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .choice-grid--six,
+  .choice-grid--five {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .collection-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .earn-panel {
+    grid-template-columns: 190px 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .site-header {
+    height: calc(68px + env(safe-area-inset-top));
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  .page {
+    width: min(100% - 24px, 560px);
+    padding: 24px 0 55px;
+  }
+  h1 {
+    font-size: 2.4rem;
+  }
+  .hero-panel {
+    display: block;
+    min-height: 0;
+    padding: 30px 23px 23px;
+    border-radius: 18px;
+  }
+  .progress-seal {
+    width: 102px;
+    height: 102px;
+    margin: 25px auto 0;
+  }
+  .hero-panel > .progress-track {
+    margin-top: 22px;
+  }
+  .summary-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .summary-row > div {
+    padding: 0 8px !important;
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+  }
+  .summary-row svg {
+    width: 18px;
+  }
+  .summary-row span {
+    font-size: 0.63rem;
+  }
+  .section-heading {
+    margin-top: 34px;
+  }
+  .section-heading p {
+    display: none;
+  }
+  .adventure-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .adventure-card {
+    display: grid;
+    min-height: 0;
+    padding: 15px;
+    grid-template-columns: 125px 1fr;
+    align-items: center;
+  }
+  .adventure-card__copy {
+    grid-column: 2;
+    padding-left: 12px;
+  }
+  .adventure-card__copy > p {
+    min-height: 0;
+  }
+  .card-number {
+    top: 10px;
+    left: 10px;
+    width: 29px;
+    height: 29px;
+  }
+  .detail-hero {
+    display: block;
+    padding: 23px;
+  }
+  .detail-badge .badge-image {
+    width: 260px;
+    margin: auto;
+  }
+  .detail-facts > div {
+    min-width: 0;
+    flex: 1;
+  }
+  .completed-panel,
+  .planner-controls {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .planner-controls input {
+    width: 100%;
+  }
+  .paper-card {
+    padding: 23px;
+  }
+  .record-heading {
+    align-items: start;
+  }
+  .record-heading .badge-image {
+    width: 74px;
+    flex: 0 0 74px;
+  }
+  .journal-section {
+    padding: 20px 16px;
+  }
+  .field-grid--three,
+  .memory-fields {
+    grid-template-columns: 1fr;
+  }
+  .memory-fields > label:last-child {
+    grid-column: auto;
+  }
+  .choice-grid--five,
+  .choice-grid--six,
+  .choice-grid--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .earn-panel {
+    display: block;
+    padding: 27px 21px;
+    text-align: center;
+  }
+  .earn-badge {
+    display: flex;
+    justify-content: center;
+  }
+  .collection-case {
+    padding: 70px 12px 25px;
+    border-width: 6px;
+  }
+  .collection-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  .collection-item {
+    display: grid;
+    min-height: 170px;
+    padding: 12px;
+    text-align: left;
+    grid-template-columns: 145px 1fr;
+    grid-template-rows: auto auto auto;
+    align-content: center;
+  }
+  .collection-shelf {
+    min-height: 145px;
+    grid-row: 1/4;
+  }
+  .collection-item > strong {
+    align-self: end;
+    margin: 0;
+  }
+  .collection-item > span {
+    min-height: 0;
+  }
+  .case-plaque {
+    min-width: 240px;
+  }
+  .timeline-entry {
+    grid-template-columns: 35px 1fr;
+    gap: 8px;
+  }
+  .timeline::before {
+    left: 17px;
+  }
+  .timeline-marker span {
+    width: 34px;
+    height: 34px;
+  }
+  .journal-card > header {
+    padding: 15px;
+    grid-template-columns: 70px 1fr;
+    gap: 10px;
+  }
+  .journal-badge {
+    width: 70px;
+  }
+  .journal-card header > a {
+    grid-column: 2;
+  }
+  .journal-stats {
+    padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 10px 15px;
+  }
+  .settings-list section {
+    grid-template-columns: auto 1fr;
+  }
+  .settings-list section .button {
+    grid-column: 1/-1;
+  }
+  .danger-zone,
+  .confirm-reset {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+  }
+}
+@media print {
+  body {
+    background: white;
+  }
+  body::before,
+  .site-header,
+  .bottom-nav,
+  .back-link,
+  .notice,
+  .journal-card header > a {
+    display: none !important;
+  }
+  .app-shell {
+    padding: 0;
+  }
+  .page {
+    width: 100%;
+    padding: 0;
+  }
+  .timeline-entry {
+    break-inside: avoid;
+  }
+}
