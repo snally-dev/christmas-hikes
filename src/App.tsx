@@ -19,6 +19,14 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
+  useEffect(() => {
+    const scrollReset = window.setTimeout(
+      () => window.scrollTo({ top: 0, left: 0, behavior: "instant" }),
+      0,
+    );
+    return () => window.clearTimeout(scrollReset);
+  }, [route]);
+
   let page;
   switch (route.page) {
     case "collection":

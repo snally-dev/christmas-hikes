@@ -454,14 +454,14 @@
 .collection-item > span {
   min-height: 36px;
   color: #d9ccba;
-  font-size: 0.66rem;
+  font-size: 0.75rem;
 }
 .collection-item > small {
   display: flex;
   gap: 4px;
   align-items: center;
   color: #edcc83;
-  font-size: 0.62rem;
+  font-size: 0.75rem;
   font-weight: 800;
   text-transform: uppercase;
 }
@@ -476,6 +476,8 @@
   background: rgba(7, 27, 22, 0.8);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   place-items: center;
 }
 .badge-modal,

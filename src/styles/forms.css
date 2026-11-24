@@ -74,12 +74,12 @@ label > span,
 .yes-no legend {
   display: block;
   margin-bottom: 7px;
-  font-size: 0.78rem;
+  font-size: 0.875rem;
   font-weight: 800;
 }
 label span em {
   color: #9d332d;
-  font-size: 0.67rem;
+  font-size: 0.75rem;
   font-style: normal;
 }
 label span small,
@@ -140,7 +140,7 @@ fieldset small {
   font-size: 1.7rem;
 }
 .choice-button strong {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 .choice-button.is-selected {
   color: #0b2a22;

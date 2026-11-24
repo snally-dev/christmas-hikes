@@ -52,6 +52,12 @@ input,
 textarea {
   -webkit-tap-highlight-color: transparent;
 }
+button,
+a,
+label[for],
+.achievement-toggle {
+  touch-action: manipulation;
+}
 button {
   cursor: pointer;
 }
@@ -194,7 +200,7 @@ a {
   align-items: center;
   justify-content: center;
   color: #68776f;
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-decoration: none;
   border-radius: 14px;
@@ -254,6 +260,16 @@ a {
   background: transparent;
   border: 0;
   border-radius: 11px;
+}
+.brand,
+.icon-button,
+.bottom-nav a,
+.button,
+.choice-button,
+.achievement-toggle,
+.collection-item {
+  -webkit-user-select: none;
+  user-select: none;
 }
 .button svg {
   width: 18px;
@@ -457,5 +473,18 @@ a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+@media (hover: none) and (pointer: coarse) {
+  .brand:active,
+  .icon-button:active,
+  .bottom-nav a:active,
+  .button:active,
+  .choice-button:active,
+  .achievement-toggle:active,
+  .collection-item:not(:disabled):active,
+  .adventure-card:active {
+    opacity: 0.88;
+    transform: scale(0.98);
   }
 }

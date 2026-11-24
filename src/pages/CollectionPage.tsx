@@ -1,5 +1,5 @@
 import { Award, CalendarDays, LockKeyhole, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BadgeImage } from "../components/BadgeImage";
 import { useRecords } from "../context/RecordsContext";
 import { getHikeById, hikes } from "../data/hikes";
@@ -9,11 +9,59 @@ export function CollectionPage() {
   const { records } = useRecords();
   const completed = records.filter((record) => record.completed);
   const [openId, setOpenId] = useState<number>();
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const openHike = openId ? getHikeById(openId) : undefined;
   const openRecord = openId
     ? records.find((record) => record.hikeId === openId && record.completed)
     : undefined;
   const percent = Math.round((completed.length / hikes.length) * 100);
+
+  useEffect(() => {
+    if (!openId) return;
+
+    const dialog = dialogRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setOpenId(undefined);
+        return;
+      }
+      if (event.key !== "Tab" || !dialog) return;
+
+      const focusable = Array.from(
+        dialog.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) return;
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      } else if (!dialog.contains(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      triggerRef.current?.focus();
+    };
+  }, [openId]);
 
   return (
     <div className="page collection-page">
@@ -56,7 +104,11 @@ export function CollectionPage() {
                 key={hike.id}
                 type="button"
                 className={`collection-item ${record ? "is-earned" : ""}`}
-                onClick={() => record && setOpenId(hike.id)}
+                onClick={(event) => {
+                  if (!record) return;
+                  triggerRef.current = event.currentTarget;
+                  setOpenId(hike.id);
+                }}
                 disabled={!record}
               >
                 <div className="collection-shelf">
@@ -86,15 +138,17 @@ export function CollectionPage() {
       {openHike && openRecord && (
         <div
           className="modal-backdrop"
-          onMouseDown={(event) => event.target === event.currentTarget && setOpenId(undefined)}
+          onClick={(event) => event.target === event.currentTarget && setOpenId(undefined)}
         >
           <section
+            ref={dialogRef}
             className="badge-modal"
             role="dialog"
             aria-modal="true"
             aria-labelledby="badge-modal-title"
           >
             <button
+              ref={closeRef}
               className="icon-button modal-close"
               onClick={() => setOpenId(undefined)}
               aria-label="Close badge details"

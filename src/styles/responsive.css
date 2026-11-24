@@ -9,7 +9,7 @@
     padding-left: 28px;
   }
   .bottom-nav {
-    top: 74px;
+    top: calc(74px + env(safe-area-inset-top));
     right: auto;
     width: 92px;
     min-height: 0;

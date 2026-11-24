@@ -18,7 +18,7 @@ export function Celebration() {
     <div
       className="celebration-backdrop"
       role="presentation"
-      onMouseDown={(event) => event.target === event.currentTarget && clearCelebration()}
+      onClick={(event) => event.target === event.currentTarget && clearCelebration()}
     >
       <section
         className="celebration"
