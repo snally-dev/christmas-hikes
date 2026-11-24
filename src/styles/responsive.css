@@ -4,6 +4,8 @@
     padding-left: 92px;
   }
   .site-header {
+    width: calc(100% + 92px);
+    margin-left: -92px;
     padding-left: 28px;
   }
   .bottom-nav {
@@ -27,6 +29,12 @@
   .bottom-nav a.is-active {
     color: #f2dfaa;
     background: rgba(255, 255, 255, 0.09);
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .adventure-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 38px rgba(23, 39, 31, 0.11);
   }
 }
 @media (max-width: 900px) {
