@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "title": "The Six Hikes of Christmas",
+  "title": "Six Hikes of Christmas",
   "year": 2026,
   "timeZone": "America/New_York",
   "difficultyEnum": ["easy", "moderate", "hard"],
@@ -23,7 +23,7 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Climb the Appalachian Trail to a rocky overlook high above the Potomac River and the Blue Ridge Mountains.",
-      "distanceMiles": 2,
+      "distanceMiles": 1.7201732615418857,
       "distanceEstimated": false,
       "difficulty": "moderate",
       "routeType": "out_and_back",
@@ -36,16 +36,27 @@
         "address": "799 Washington Street, Harpers Ferry, WV 25425, USA",
         "url": "https://appalachiantrail.org/experience/visit-us/harpers-ferry-visitor-center/"
       },
-      "badge": {
-        "name": "Appalachian Adventurer",
-        "unlockedImage": "badges/01-weverton-cliffs.webp",
-        "lockedImage": "badges/01-weverton-cliffs-locked.webp"
-      },
       "sources": [
         "https://appalachiantrail.org/hikes/weverton-cliffs/",
         "https://appalachiantrail.org/experience/visit-us/harpers-ferry-visitor-center/",
         "https://sites.google.com/site/tuesdayvigoroushikers/past-hikes"
-      ]
+      ],
+      "mission": "Spot a white trail blaze.",
+      "secondMission": "Spot a bend in the Potomac.",
+      "allTrailsRouteType": "verified",
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/trail/us/maryland/weverton-cliffs--3"
+      },
+      "elevationGainFeet": 630.1181102362206,
+      "elevationLossFeet": 626.2467191601052,
+      "minElevationFeet": 363.7795275590551,
+      "maxElevationFeet": 858.038057742782,
+      "durationMinutes": 95,
+      "badge": {
+        "name": "Appalachian Adventurer",
+        "unlockedImage": "badges/01-weverton-cliffs.webp",
+        "lockedImage": "badges/01-weverton-cliffs-locked.webp"
+      }
     },
     {
       "id": 2,
@@ -64,7 +75,7 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Explore the historic Worthington Farm and climb through the woods to the highest point on the Monocacy battlefield.",
-      "distanceMiles": 1.9,
+      "distanceMiles": 1.9728291909426465,
       "distanceEstimated": false,
       "difficulty": "moderate",
       "routeType": "loop",
@@ -77,21 +88,32 @@
         "address": "5201 Urbana Pike, Frederick, MD 21704, USA",
         "url": "https://www.nps.gov/mono/planyourvisit/hours.htm"
       },
-      "badge": {
-        "name": "Monocacy Defender",
-        "unlockedImage": "badges/02-brooks-hill.webp",
-        "lockedImage": "badges/02-brooks-hill-locked.webp"
-      },
       "sources": [
         "https://www.nps.gov/mono/planyourvisit/brooks-hill-loop-trail.htm",
         "https://www.nps.gov/mono/planyourvisit/hours.htm",
         "https://birdersguidemddc.org/site/monocacy-national-battlefield/"
-      ]
+      ],
+      "mission": "Find Worthington House.",
+      "secondMission": "Spot where field meets forest.",
+      "allTrailsRouteType": "verified",
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/trail/us/maryland/brooks-hill-loop-trail"
+      },
+      "elevationGainFeet": 255.15091863517063,
+      "elevationLossFeet": 255.28215223097118,
+      "minElevationFeet": 238.15616797900262,
+      "maxElevationFeet": 437.007874015748,
+      "durationMinutes": 95,
+      "badge": {
+        "name": "Monocacy Defender",
+        "unlockedImage": "badges/02-brooks-hill.webp",
+        "lockedImage": "badges/02-brooks-hill-locked.webp"
+      }
     },
     {
       "id": 3,
       "slug": "blue-blazes",
-      "name": "Blue Blazes Whiskey Still",
+      "name": "Blue Blazes Whiskey Still & Park Headquarters",
       "park": "Catoctin Mountain Park",
       "parkCode": "cato",
       "parkUrl": "https://www.nps.gov/cato/index.htm",
@@ -105,29 +127,45 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Follow a mountain creek to a reconstructed Prohibition-era whiskey still and extend the adventure along the trail to park headquarters.",
-      "distanceMiles": 2.6,
+      "distanceMiles": 2.42869621696308,
       "distanceEstimated": false,
       "difficulty": "moderate",
       "routeType": "combined",
       "returnsToStart": true,
-      "highlights": ["Blue Blazes Whiskey Still", "Blue Blazes Creek", "Prohibition history"],
-      "routeNotes": "Walk the 0.6-mile still trail round trip, then the 2-mile Visitor Center to Park Headquarters trail round trip.",
+      "highlights": [
+        "Blue Blazes Whiskey Still",
+        "Blue Blazes Creek",
+        "Prohibition history",
+        "Park headquarters"
+      ],
+      "routeNotes": "From the visitor center area, follow the planned out-and-back legs to the whiskey still and park headquarters.",
       "trailUrl": "https://www.nps.gov/cato/planyourvisit/east-hiking-trails.htm",
       "passportStamp": {
         "name": "Catoctin Mountain Park Visitor Center",
         "address": "14707 Park Central Road, Thurmont, MD 21788, USA",
         "url": "https://www.nps.gov/cato/planyourvisit/visitorcenter.htm"
       },
-      "badge": {
-        "name": "Moonshine Detective",
-        "unlockedImage": "badges/03-blue-blazes.webp",
-        "lockedImage": "badges/03-blue-blazes-locked.webp"
-      },
       "sources": [
         "https://www.nps.gov/cato/planyourvisit/east-hiking-trails.htm",
         "https://www.nps.gov/cato/planyourvisit/visitorcenter.htm",
         "https://www.nps.gov/planyourvisit/event-details.htm?id=E264927B-CDEA-BD1D-11051C042251138C"
-      ]
+      ],
+      "mission": "Find the old still.",
+      "secondMission": "Spot the creek beside the trail.",
+      "allTrailsRouteType": "custom",
+      "elevationGainFeet": 310.43307086614175,
+      "elevationLossFeet": 309.44881889763775,
+      "minElevationFeet": 823.2939632545931,
+      "maxElevationFeet": 981.5616797900262,
+      "durationMinutes": 115,
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/custom-routes/custom-route-blue-blazes-whiskey-still-trail-773c54a"
+      },
+      "badge": {
+        "name": "Moonshine Detective",
+        "unlockedImage": "badges/03-blue-blazes.webp",
+        "lockedImage": "badges/03-blue-blazes-locked.webp"
+      }
     },
     {
       "id": 4,
@@ -146,35 +184,46 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Cross the famous stone Burnside Bridge, see its witness sycamore, and explore the peaceful banks of Antietam Creek.",
-      "distanceMiles": 2.8,
-      "distanceEstimated": true,
+      "distanceMiles": 2.6659104552806934,
+      "distanceEstimated": false,
       "difficulty": "moderate",
       "routeType": "combined",
       "returnsToStart": true,
       "highlights": ["Burnside Bridge", "Witness sycamore", "Antietam Creek"],
-      "routeNotes": "Combine the 1-mile Union Advance loop and 1.8-mile Snavely Ford loop from Tour Stop 8; connecting steps may add distance.",
+      "routeNotes": "Walk the Snavely Ford loop and take the side trip to cross Burnside Bridge.",
       "trailUrl": "https://www.nps.gov/anti/planyourvisit/hiking.htm",
       "passportStamp": {
         "name": "Antietam Visitor Center",
         "address": "5831 Dunker Church Road, Sharpsburg, MD 21782, USA",
         "url": "https://www.nps.gov/anti/planyourvisit/visitorcenters.htm"
       },
-      "badge": {
-        "name": "Antietam Explorer",
-        "unlockedImage": "badges/04-burnside-bridge.webp",
-        "lockedImage": "badges/04-burnside-bridge-locked.webp"
-      },
       "sources": [
         "https://www.nps.gov/anti/planyourvisit/hiking.htm",
         "https://www.nps.gov/anti/planyourvisit/visitorcenters.htm",
         "https://www.nps.gov/anti/planyourvisit/snavely-ford-trail.htm",
         "https://www.nps.gov/planyourvisit/event-details.htm?id=9BB51DAC-DDD2-D586-DE9DC61A1CD7411E"
-      ]
+      ],
+      "mission": "Spot the big sycamore by the bridge.",
+      "secondMission": "Count the bridge arches.",
+      "allTrailsRouteType": "custom",
+      "elevationGainFeet": 205.31496062992125,
+      "elevationLossFeet": 205.6430446194226,
+      "minElevationFeet": 310.03937007874015,
+      "maxElevationFeet": 442.257217847769,
+      "durationMinutes": 125,
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/custom-routes/burnside-bridge-snavely-ford-7904d84"
+      },
+      "badge": {
+        "name": "Antietam Explorer",
+        "unlockedImage": "badges/04-burnside-bridge.webp",
+        "lockedImage": "badges/04-burnside-bridge-locked.webp"
+      }
     },
     {
       "id": 5,
       "slug": "williamsport-lock-44",
-      "name": "Cushwa Basin & Lockhouse 44",
+      "name": "Cushwa Basin, Aqueduct & Lockhouse 44",
       "park": "Chesapeake & Ohio Canal National Historical Park",
       "parkCode": "choh",
       "parkUrl": "https://www.nps.gov/choh/index.htm",
@@ -188,8 +237,8 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Explore the historic canal basin, aqueduct, railroad lift bridge and Lockhouse 44 on a walk along the C&O Canal.",
-      "distanceMiles": 2.5,
-      "distanceEstimated": true,
+      "distanceMiles": 2.136119778433573,
+      "distanceEstimated": false,
       "difficulty": "easy",
       "routeType": "out_and_back",
       "returnsToStart": true,
@@ -197,29 +246,41 @@
         "Lockhouse 44",
         "Conococheague Aqueduct",
         "Railroad lift bridge",
-        "Cushwa Warehouse"
+        "Cushwa Warehouse",
+        "C&O Canal towpath"
       ],
-      "routeNotes": "Walk downstream via the gravel rail trail to Lock 44, join the towpath and turn around when total outbound walking reaches 1.25 miles; return to Cushwa Basin.",
+      "routeNotes": "Explore the aqueduct and railroad lift bridge near Cushwa Basin, then continue past Lockhouse 44 along the towpath before turning back.",
       "trailUrl": "https://www.nps.gov/choh/planyourvisit/williamsportvisitorcenter.htm",
       "passportStamp": {
         "name": "Williamsport Visitor Center (Cushwa Basin)",
         "address": "205 W Potomac Street, Williamsport, MD 21795, USA",
         "url": "https://www.nps.gov/choh/planyourvisit/williamsportvisitorcenter.htm"
       },
+      "sources": [
+        "https://www.nps.gov/choh/planyourvisit/williamsportvisitorcenter.htm",
+        "https://www.nps.gov/planyourvisit/event-details.htm?id=739F2DDC-C109-59AA-5E6AE0572E2F40A4"
+      ],
+      "mission": "Find Lock 44.",
+      "secondMission": "Spot the aqueduct arches.",
+      "allTrailsRouteType": "custom",
+      "elevationGainFeet": 21.620734908136495,
+      "elevationLossFeet": 19.422572178477694,
+      "minElevationFeet": 338.28740157480314,
+      "maxElevationFeet": 364.33727034120733,
+      "durationMinutes": 100,
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/custom-routes/cushwa-basin-aqueduct-lockhouse-44-fbd3ab1"
+      },
       "badge": {
         "name": "Christmas Canawler",
         "unlockedImage": "badges/05-williamsport-lock-44.webp",
         "lockedImage": "badges/05-williamsport-lock-44-locked.webp"
-      },
-      "sources": [
-        "https://www.nps.gov/choh/planyourvisit/williamsportvisitorcenter.htm",
-        "https://www.nps.gov/planyourvisit/event-details.htm?id=739F2DDC-C109-59AA-5E6AE0572E2F40A4"
-      ]
+      }
     },
     {
       "id": 6,
       "slug": "murphy-chambers-farm",
-      "name": "Murphy-Chambers Farm Trail",
+      "name": "Murphy-Chambers Farm Loop",
       "park": "Harpers Ferry National Historical Park",
       "parkCode": "hafe",
       "parkUrl": "https://www.nps.gov/hafe/index.htm",
@@ -233,33 +294,49 @@
         "coordinateAccuracy": "approximate"
       },
       "description": "Discover Civil War earthworks, the former site of John Brown’s Fort and a sweeping overlook of the Shenandoah River.",
-      "distanceMiles": 2.5,
-      "distanceEstimated": true,
+      "distanceMiles": 2.786630536603623,
+      "distanceEstimated": false,
       "difficulty": "moderate",
-      "routeType": "out_and_back",
+      "routeType": "loop",
       "returnsToStart": true,
       "highlights": [
         "Shenandoah River overlook",
         "Historic cannons and earthworks",
         "Former John Brown Fort site"
       ],
-      "routeNotes": "Start at the visitor center, follow the farm trail to the overlook and return, adding optional side trails for a target of 2.5 miles.",
+      "routeNotes": "Follow the planned loop from the visitor center through the farm and past the Shenandoah River overlook.",
       "trailUrl": "https://www.nps.gov/hafe/planyourvisit/murphy-chambers-farm-trail.htm",
       "passportStamp": {
         "name": "Lower Town Park Bookshop",
         "address": "Lower Town, Harpers Ferry, WV 25425, USA",
         "url": "https://www.nps.gov/hafe/planyourvisit/passportstamps.htm"
       },
-      "badge": {
-        "name": "Harpers Ferry Scout",
-        "unlockedImage": "badges/06-murphy-chambers-farm.webp",
-        "lockedImage": "badges/06-murphy-chambers-farm-locked.webp"
-      },
       "sources": [
         "https://www.nps.gov/hafe/planyourvisit/murphy-chambers-farm-trail.htm",
         "https://www.nps.gov/hafe/planyourvisit/passportstamps.htm",
         "https://www.nps.gov/hafe/planyourvisit/directions.htm?ms=modal"
-      ]
+      ],
+      "mission": "Find John Brown’s fort site.",
+      "secondMission": "Spot the Shenandoah below.",
+      "allTrailsRouteType": "verified",
+      "allTrails": {
+        "url": "https://www.alltrails.com/explore/trail/us/west-virginia/murphy-chambers-farm-loop-trail"
+      },
+      "elevationGainFeet": 297.0472440944884,
+      "elevationLossFeet": 296.5223097112863,
+      "minElevationFeet": 386.3845144356955,
+      "maxElevationFeet": 511.7454068241469,
+      "durationMinutes": 130,
+      "badge": {
+        "name": "Harpers Ferry Scout",
+        "unlockedImage": "badges/06-murphy-chambers-farm.webp",
+        "lockedImage": "badges/06-murphy-chambers-farm-locked.webp"
+      }
     }
-  ]
+  ],
+  "startLabel": "Thanksgiving",
+  "startDate": "2026-11-26",
+  "endDate": "2026-12-31",
+  "goal": 6,
+  "targetMiles": 13.7103594397655
 }

@@ -1,18 +1,21 @@
-import { Award, CalendarDays, LockKeyhole, X } from "lucide-react";
+import { CalendarDays, LockKeyhole, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { BadgeImage } from "../components/BadgeImage";
 import { useRecords } from "../context/RecordsContext";
-import { getHikeById, hikes } from "../data/hikes";
+import { badgeUrl, editions } from "../data/hikes";
+import { seasonStatus } from "../lib/season";
 import { formatDate } from "../lib/storage";
 
 export function CollectionPage() {
-  const { records } = useRecords();
+  const { records, edition, today, selectYear } = useRecords();
+  const { hikes, goal, completionBadge } = edition;
+  const { master } = seasonStatus(edition, records, today);
   const completed = records.filter((record) => record.completed);
   const [openId, setOpenId] = useState<number>();
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const openHike = openId ? getHikeById(openId) : undefined;
+  const openHike = openId ? edition.hikes.find((item) => item.id === openId) : undefined;
   const openRecord = openId
     ? records.find((record) => record.hikeId === openId && record.completed)
     : undefined;
@@ -69,10 +72,25 @@ export function CollectionPage() {
         <span className="eyebrow">The patch cabinet</span>
         <h1>Badge Collection</h1>
         <p>Each trail adds another story to the collection.</p>
+        {editions.length > 1 && (
+          <label className="edition-picker">
+            Collection year
+            <select
+              value={edition.year}
+              onChange={(event) => selectYear(Number(event.target.value))}
+            >
+              {editions.map(({ year }) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <div className="collection-progress">
           <strong>
             {completed.length}
-            <span>/6</span>
+            <span>/{goal}</span>
           </strong>
           <div>
             <span>{percent}% complete</span>
@@ -82,19 +100,32 @@ export function CollectionPage() {
           </div>
         </div>
       </header>
-      {completed.length === hikes.length && (
-        <section className="master-banner">
-          <Award size={38} />
-          <div>
-            <span className="eyebrow">Complete collection</span>
-            <h2>Christmas Trail Master</h2>
-          </div>
-        </section>
-      )}
+      <section className="master-banner">
+        <img
+          className="master-patch"
+          src={badgeUrl(master ? completionBadge.unlockedImage : completionBadge.lockedImage)}
+          alt=""
+        />
+        <div>
+          <h2>
+            {completionBadge.name} {edition.year}
+          </h2>
+          {master ? (
+            <>
+              <p>Earned {formatDate(master.date)}</p>
+              <a className="button button--secondary" href="#certificate">
+                View certificate
+              </a>
+            </>
+          ) : (
+            <p>Earn this patch by hiking all {goal} trails during the challenge season.</p>
+          )}
+        </div>
+      </section>
       <div className="collection-case">
         <div className="case-plaque">
           <span>Six Hikes of Christmas</span>
-          <small>2026 National Park Collection</small>
+          <small>{edition.year} National Park Collection</small>
         </div>
         <div className="collection-grid">
           {hikes.map((hike) => {

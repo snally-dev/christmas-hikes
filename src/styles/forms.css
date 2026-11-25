@@ -1,6 +1,7 @@
 input,
 textarea {
   width: 100%;
+  min-width: 0;
   min-height: 48px;
   padding: 10px 12px;
   color: #24342d;
@@ -26,7 +27,7 @@ textarea {
 }
 .record-heading p {
   margin: 0;
-  color: #68756d;
+  color: var(--muted-ink);
 }
 .journal-section {
   margin-bottom: 20px;
@@ -59,12 +60,17 @@ textarea {
 }
 .journal-section header p {
   margin: 3px 0 0;
-  color: #68756d;
+  color: var(--muted-ink);
   font-size: 0.88rem;
 }
 .field-grid {
   display: grid;
   gap: 16px;
+}
+.field-grid > label,
+.memory-fields > label,
+.record-heading > div {
+  min-width: 0;
 }
 .field-grid--three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -84,7 +90,7 @@ label span em {
 }
 label span small,
 fieldset small {
-  color: #68756d;
+  color: var(--muted-ink);
   font-weight: 500;
 }
 .calculated-field {
@@ -100,7 +106,7 @@ fieldset small {
 .calculated-field > span {
   display: flex;
   gap: 6px;
-  color: #68756d;
+  color: var(--muted-ink);
   font-size: 0.73rem;
   font-weight: 800;
 }
@@ -171,13 +177,19 @@ fieldset small {
   width: 48px;
   height: 48px;
   padding: 0;
-  color: #c8c2b5;
+  color: #71634c;
   background: transparent;
   border: 0;
   place-items: center;
 }
+.star-row button svg {
+  fill: none;
+}
 .star-row button.is-selected {
-  color: #c99a3d;
+  color: #875b17;
+}
+.star-row button.is-selected svg {
+  fill: currentColor;
 }
 .toggle-list {
   display: grid;
@@ -199,8 +211,16 @@ fieldset small {
   background: #dce8df;
   border-color: #23634c;
 }
+.achievement-toggle:focus-within {
+  outline: 3px solid #9d332d;
+  outline-offset: 3px;
+}
 .achievement-toggle input {
   position: absolute;
+  width: 1px;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
   opacity: 0;
   pointer-events: none;
 }
@@ -208,6 +228,8 @@ fieldset small {
   display: grid;
   width: 38px;
   height: 38px;
+  flex: none;
+  margin: 0;
   color: #9d332d;
   background: #fffaf0;
   border-radius: 50%;
@@ -220,8 +242,10 @@ fieldset small {
 .switch {
   width: 47px;
   height: 27px;
+  flex: none;
+  margin: 0;
   padding: 3px;
-  background: #b6b5aa;
+  background: #77796f;
   border-radius: 20px;
 }
 .switch i {

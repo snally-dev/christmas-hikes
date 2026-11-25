@@ -1,3 +1,4 @@
+import { challenge } from "../data/hikes";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import {
   calculateDuration,
@@ -54,4 +55,16 @@ describe("duration calculation", () => {
     expect(calculateDuration("23:45", "00:15")).toBe(30);
     expect(calculateDuration(undefined, "12:00")).toBeUndefined();
   });
+});
+
+it("keeps annual journals separate and restores a legacy edition backup", () => {
+  const future = { ...challenge, year: 2027 };
+  saveRecords([record]);
+  saveRecords([{ ...record, missionCompleted: true }], future);
+  expect(loadRecords().records).toEqual([record]);
+  expect(loadRecords(future).records[0].missionCompleted).toBe(true);
+  expect(parseBackup(JSON.parse(createExport([record]))).records).toEqual([record]);
+  expect(() => parseBackup(JSON.parse(createExport([record], future)))).toThrow(
+    /different challenge year/,
+  );
 });

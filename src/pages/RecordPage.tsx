@@ -2,9 +2,9 @@ import { ArrowLeft, Award, Check, Clock3, Save, Star } from "lucide-react";
 import { useMemo, useState, type FormEvent } from "react";
 import { BadgeImage } from "../components/BadgeImage";
 import { useRecords } from "../context/RecordsContext";
-import { getHikeBySlug } from "../data/hikes";
 import { discoveryOptions, feelingOptions, weatherOptions } from "../lib/labels";
-import { calculateDuration, formatDuration, localToday } from "../lib/storage";
+import { calculateDuration, formatDuration } from "../lib/storage";
+import { isCalendarDate } from "../lib/season";
 import type { AdventureRecord, Discovery, Feeling, Weather } from "../types";
 
 interface FormState {
@@ -18,8 +18,10 @@ interface FormState {
   weather: Weather[];
   discoveries: Discovery[];
   passportStampCollected: boolean;
-  juniorRangerBadgeEarned: boolean;
   completedEntireHike: boolean;
+  missionCompleted: boolean;
+  secondMissionCompleted: boolean;
+  spottedFourSquirrels: boolean;
   favoritePart: string;
   biggestSurprise: string;
   wouldHikeAgain?: boolean;
@@ -27,23 +29,25 @@ interface FormState {
 }
 
 export function RecordPage({ slug }: { slug: string }) {
-  const hike = getHikeBySlug(slug);
-  const { getRecord, upsertRecord } = useRecords();
+  const { edition, today, getRecord, upsertRecord } = useRecords();
+  const hike = edition.hikes.find((item) => item.slug === slug);
   const existing = hike ? getRecord(hike.id) : undefined;
   const [validationError, setValidationError] = useState("");
   const [state, setState] = useState<FormState>(() => ({
-    completedDate: existing?.completedDate ?? localToday(),
+    completedDate: existing?.completedDate ?? today,
     startTime: existing?.startTime ?? "",
     endTime: existing?.endTime ?? "",
-    actualDistanceMiles: String(existing?.actualDistanceMiles ?? hike?.distanceMiles ?? ""),
+    actualDistanceMiles: String(existing?.actualDistanceMiles ?? ""),
     temperatureF: existing?.temperatureF === undefined ? "" : String(existing.temperatureF),
     feeling: existing?.feeling,
     rating: existing?.rating,
     weather: existing?.weather ?? [],
     discoveries: existing?.discoveries ?? [],
     passportStampCollected: existing?.passportStampCollected ?? false,
-    juniorRangerBadgeEarned: existing?.juniorRangerBadgeEarned ?? false,
     completedEntireHike: existing?.completedEntireHike ?? false,
+    missionCompleted: existing?.missionCompleted ?? false,
+    secondMissionCompleted: existing?.secondMissionCompleted ?? false,
+    spottedFourSquirrels: existing?.spottedFourSquirrels ?? false,
     favoritePart: existing?.favoritePart ?? "",
     biggestSurprise: existing?.biggestSurprise ?? "",
     wouldHikeAgain: existing?.wouldHikeAgain,
@@ -76,11 +80,13 @@ export function RecordPage({ slug }: { slug: string }) {
 
   const save = (event: FormEvent) => {
     event.preventDefault();
-    const distance = Number(state.actualDistanceMiles);
+    const distance = state.actualDistanceMiles.trim()
+      ? Number(state.actualDistanceMiles)
+      : undefined;
     const temperature = state.temperatureF === "" ? undefined : Number(state.temperatureF);
-    if (!state.completedDate)
+    if (!isCalendarDate(state.completedDate) || state.completedDate > today)
       return setValidationError("Choose the date you completed this adventure.");
-    if (!Number.isFinite(distance) || distance < 0 || distance > 100)
+    if (distance !== undefined && (!Number.isFinite(distance) || distance < 0 || distance > 100))
       return setValidationError("Enter an actual distance between 0 and 100 miles.");
     if (
       temperature !== undefined &&
@@ -90,6 +96,7 @@ export function RecordPage({ slug }: { slug: string }) {
 
     const now = new Date().toISOString();
     const record: AdventureRecord = {
+      ...existing,
       hikeId: hike.id,
       plannedDate: existing?.plannedDate,
       completed: true,
@@ -104,8 +111,10 @@ export function RecordPage({ slug }: { slug: string }) {
       weather: state.weather,
       discoveries: state.discoveries,
       passportStampCollected: state.passportStampCollected,
-      juniorRangerBadgeEarned: state.juniorRangerBadgeEarned,
       completedEntireHike: state.completedEntireHike,
+      missionCompleted: state.missionCompleted,
+      secondMissionCompleted: state.secondMissionCompleted,
+      spottedFourSquirrels: state.spottedFourSquirrels,
       favoritePart: state.favoritePart.trim() || undefined,
       biggestSurprise: state.biggestSurprise.trim() || undefined,
       wouldHikeAgain: state.wouldHikeAgain,
@@ -153,6 +162,7 @@ export function RecordPage({ slug }: { slug: string }) {
               <input
                 type="date"
                 required
+                max={today}
                 value={state.completedDate}
                 onChange={(e) => setField("completedDate", e.target.value)}
               />
@@ -179,14 +189,15 @@ export function RecordPage({ slug }: { slug: string }) {
             </label>
             <label>
               <span>
-                Actual distance <small>miles</small>
+                Actual distance <small>miles · optional</small>
               </span>
               <input
                 type="number"
                 min="0"
                 max="100"
-                step="0.1"
+                step="any"
                 inputMode="decimal"
+                placeholder={`Planned: ${hike.distanceMiles.toFixed(2)} mi`}
                 value={state.actualDistanceMiles}
                 onChange={(e) => setField("actualDistanceMiles", e.target.value)}
               />
@@ -220,11 +231,7 @@ export function RecordPage({ slug }: { slug: string }) {
           title="How was your adventure?"
           subtitle="Pick the feeling that fits best."
         >
-          <div
-            className="choice-grid choice-grid--five"
-            role="radiogroup"
-            aria-label="Overall feeling"
-          >
+          <div className="choice-grid choice-grid--five" role="group" aria-label="Overall feeling">
             {feelingOptions.map((option) => (
               <ChoiceButton
                 key={option.value}
@@ -234,7 +241,6 @@ export function RecordPage({ slug }: { slug: string }) {
                 onClick={() =>
                   setField("feeling", state.feeling === option.value ? undefined : option.value)
                 }
-                radio
               />
             ))}
           </div>
@@ -249,9 +255,10 @@ export function RecordPage({ slug }: { slug: string }) {
                   type="button"
                   className={state.rating && rating <= state.rating ? "is-selected" : ""}
                   onClick={() => setField("rating", state.rating === rating ? undefined : rating)}
+                  aria-pressed={state.rating === rating}
                   aria-label={`${rating} star${rating === 1 ? "" : "s"}`}
                 >
-                  <Star fill="currentColor" />
+                  <Star aria-hidden="true" />
                 </button>
               ))}
             </div>
@@ -301,16 +308,28 @@ export function RecordPage({ slug }: { slug: string }) {
         >
           <div className="toggle-list">
             <Toggle
+              checked={state.missionCompleted}
+              onChange={(value) => setField("missionCompleted", value)}
+              icon="✓"
+              label={`Trail mission · ${hike.mission}`}
+            />
+            <Toggle
+              checked={state.secondMissionCompleted}
+              onChange={(value) => setField("secondMissionCompleted", value)}
+              icon="✓"
+              label={`Trail mission · ${hike.secondMission}`}
+            />
+            <Toggle
+              checked={state.spottedFourSquirrels}
+              onChange={(value) => setField("spottedFourSquirrels", value)}
+              icon="🐿️"
+              label="Spot four squirrels"
+            />
+            <Toggle
               checked={state.passportStampCollected}
               onChange={(value) => setField("passportStampCollected", value)}
               icon="▣"
-              label="Collected a National Park passport stamp"
-            />
-            <Toggle
-              checked={state.juniorRangerBadgeEarned}
-              onChange={(value) => setField("juniorRangerBadgeEarned", value)}
-              icon="★"
-              label="Earned a Junior Ranger badge"
+              label="I collected a passport stamp (optional)"
             />
             <Toggle
               checked={state.completedEntireHike}
@@ -452,22 +471,18 @@ function ChoiceButton({
   emoji,
   label,
   onClick,
-  radio = false,
 }: {
   selected: boolean;
   emoji: string;
   label: string;
   onClick: () => void;
-  radio?: boolean;
 }) {
   return (
     <button
       className={`choice-button ${selected ? "is-selected" : ""}`}
       type="button"
       onClick={onClick}
-      role={radio ? "radio" : undefined}
-      aria-checked={radio ? selected : undefined}
-      aria-pressed={radio ? undefined : selected}
+      aria-pressed={selected}
     >
       <span aria-hidden="true">{emoji}</span>
       <strong>{label}</strong>

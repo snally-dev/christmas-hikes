@@ -8,20 +8,36 @@ import {
   Route,
   Stamp,
 } from "lucide-react";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
+import { AllTrailsMap } from "../components/AllTrailsMap";
 import { BadgeImage } from "../components/BadgeImage";
 import { useRecords } from "../context/RecordsContext";
-import { directionsUrl, getHikeBySlug } from "../data/hikes";
+import { directionsUrl } from "../data/hikes";
+import { allTrailsUrl, useRouteSettings, useTrailRoute } from "../data/privateRoutes";
 import { formatDate } from "../lib/storage";
 
+const TrailExplorer =
+  import.meta.env.MODE === "private"
+    ? lazy(() => import("../components/TrailExplorer"))
+    : () => null;
+
+const routeLabels = { loop: "Loop", out_and_back: "Out and back", combined: "Combined route" };
+
 export function AdventureDetailPage({ slug }: { slug: string }) {
-  const hike = getHikeBySlug(slug);
-  const { getRecord, upsertRecord } = useRecords();
+  const { edition, getRecord, upsertRecord } = useRecords();
+  const hike = edition.hikes.find((item) => item.slug === slug);
   const record = hike ? getRecord(hike.id) : undefined;
   const [plannedDate, setPlannedDate] = useState(record?.plannedDate ?? "");
   const [plannerMessage, setPlannerMessage] = useState("");
 
+  const { data: route, failed } = useTrailRoute(hike);
+  const settings = useRouteSettings();
+
   if (!hike) return <NotFound />;
+  const allTrails = allTrailsUrl(hike.allTrails?.url);
+  const directions = route
+    ? `https://maps.apple.com/?dirflg=d&daddr=${route.start[1]},${route.start[0]}`
+    : directionsUrl(hike);
 
   const savePlannedDate = () => {
     const now = new Date().toISOString();
@@ -31,7 +47,6 @@ export function AdventureDetailPage({ slug }: { slug: string }) {
       weather: [],
       discoveries: [],
       passportStampCollected: false,
-      juniorRangerBadgeEarned: false,
       completedEntireHike: false,
       createdAt: now,
       updatedAt: now,
@@ -53,7 +68,9 @@ export function AdventureDetailPage({ slug }: { slug: string }) {
           <BadgeImage hike={hike} earned={Boolean(record?.completed)} size="large" priority />
         </div>
         <div className="detail-heading">
-          <span className="eyebrow">Adventure {hike.id} of 6</span>
+          <span className="eyebrow">
+            Adventure {hike.id} of {edition.hikes.length}
+          </span>
           <h1>{hike.name}</h1>
           <a className="park-link" href={hike.parkUrl} target="_blank" rel="noreferrer">
             {hike.park} <ExternalLink size={14} />
@@ -66,7 +83,7 @@ export function AdventureDetailPage({ slug }: { slug: string }) {
                 <small>Distance</small>
                 <strong>
                   {hike.distanceEstimated ? "About " : ""}
-                  {hike.distanceMiles} miles
+                  {hike.distanceMiles.toFixed(2)} miles
                 </strong>
               </span>
             </div>
@@ -77,26 +94,102 @@ export function AdventureDetailPage({ slug }: { slug: string }) {
                 <strong>{hike.difficulty}</strong>
               </span>
             </div>
-          </div>
-          {record?.completed ? (
-            <div className="completed-panel">
-              <div>
-                <Check />
-                <span>
-                  <small>Adventure completed</small>
-                  <strong>{formatDate(record.completedDate)}</strong>
-                </span>
-              </div>
-              <a className="button button--secondary" href={`#record/${hike.slug}`}>
-                <Pencil size={18} /> Edit journal
-              </a>
+            <div>
+              <span>
+                <small>Estimated climb</small>
+                <strong>{Math.round(hike.elevationGainFeet)} ft</strong>
+              </span>
             </div>
-          ) : (
-            <a className="button button--primary button--large" href={`#record/${hike.slug}`}>
-              Record My Adventure
-            </a>
-          )}
+            <div>
+              <span>
+                <small>Family hike estimate</small>
+                <strong>{hike.durationMinutes} min</strong>
+              </span>
+            </div>
+            <div>
+              <span>
+                <small>Route type</small>
+                <strong>
+                  {hike.id === 3 ? "Combined out and back" : routeLabels[hike.routeType]}
+                </strong>
+              </span>
+            </div>
+          </div>
+          <div className="detail-actions">
+            {record?.completed ? (
+              <div className="completed-panel">
+                <div>
+                  <Check />
+                  <span>
+                    <small>Adventure completed</small>
+                    <strong>{formatDate(record.completedDate)}</strong>
+                  </span>
+                </div>
+                <a className="button button--secondary" href={`#record/${hike.slug}`}>
+                  <Pencil size={18} /> Edit journal
+                </a>
+              </div>
+            ) : (
+              <a className="button button--primary button--large" href={`#record/${hike.slug}`}>
+                Record My Adventure
+              </a>
+            )}
+            {allTrails && (
+              <a
+                className="button button--secondary button--large"
+                href={allTrails}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Open in AllTrails <ExternalLink size={18} />
+              </a>
+            )}
+          </div>
         </div>
+      </section>
+
+      {import.meta.env.MODE === "private" ? (
+        route ? (
+          <Suspense fallback={<p role="status">Loading trail map…</p>}>
+            <TrailExplorer
+              hike={hike}
+              route={route}
+              download={settings?.allowGpxDownload === true}
+            />
+          </Suspense>
+        ) : (
+          <p role="status">{failed ? "The trail map is unavailable." : "Loading trail map…"}</p>
+        )
+      ) : (
+        <AllTrailsMap hike={hike} />
+      )}
+
+      <section className="paper-card trail-mission">
+        <h2>Trail missions</h2>
+        <ol>
+          <li>
+            {hike.mission}
+            {record?.missionCompleted && (
+              <>
+                <span className="mission-check" aria-hidden="true">
+                  ✓
+                </span>
+                <span className="visually-hidden"> Completed</span>
+              </>
+            )}
+          </li>
+          <li>
+            {hike.secondMission}
+            {record?.secondMissionCompleted && (
+              <>
+                <span className="mission-check" aria-hidden="true">
+                  ✓
+                </span>
+                <span className="visually-hidden"> Completed</span>
+              </>
+            )}
+          </li>
+        </ol>
       </section>
 
       <div className="detail-columns">
@@ -128,11 +221,11 @@ export function AdventureDetailPage({ slug }: { slug: string }) {
           </div>
           <a
             className="button button--secondary"
-            href={directionsUrl(hike)}
+            href={directions}
             target="_blank"
             rel="noreferrer"
           >
-            Open directions <ExternalLink size={16} />
+            Get Directions <ExternalLink size={16} />
           </a>
         </section>
         <section className="paper-card passport-card">
@@ -180,7 +273,7 @@ function NotFound() {
     <div className="page empty-state">
       <MapPin size={42} />
       <h1>Trail not found</h1>
-      <p>This adventure is not in the 2026 guide.</p>
+      <p>This adventure is not in this edition.</p>
       <a className="button button--primary" href="#adventures">
         Back to adventures
       </a>

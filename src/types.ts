@@ -28,12 +28,21 @@ export interface AdventureDefinition {
   description: string;
   distanceMiles: number;
   distanceEstimated: boolean;
+  elevationGainFeet: number;
+  elevationLossFeet: number;
+  minElevationFeet: number;
+  maxElevationFeet: number;
+  durationMinutes: number;
+  allTrailsRouteType: "verified" | "custom";
   difficulty: Difficulty;
   routeType: RouteType;
   returnsToStart: boolean;
+  mission: string;
+  secondMission: string;
   highlights: string[];
   routeNotes: string;
   trailUrl: string;
+  allTrails?: { url: string; embedUrl?: string };
   passportStamp: { name: string; address: string; url: string };
   badge: { name: string; unlockedImage: string; lockedImage: string };
 }
@@ -53,7 +62,10 @@ export interface AdventureRecord {
   weather: Weather[];
   discoveries: Discovery[];
   passportStampCollected: boolean;
-  juniorRangerBadgeEarned: boolean;
+  juniorRangerBadgeEarned?: boolean;
+  missionCompleted?: boolean;
+  secondMissionCompleted?: boolean;
+  spottedFourSquirrels?: boolean;
   completedEntireHike: boolean;
   favoritePart?: string;
   biggestSurprise?: string;
@@ -65,7 +77,7 @@ export interface AdventureRecord {
 
 export interface StorageEnvelope {
   schemaVersion: 1;
-  challengeYear: 2026;
+  challengeYear: number;
   exportedAt?: string;
   records: AdventureRecord[];
 }

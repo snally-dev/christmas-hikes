@@ -1,9 +1,10 @@
-import { hikes } from "../data/hikes";
+import { challenge, type Challenge } from "../data/hikes";
+import { isCalendarDate } from "./season";
 import type { AdventureRecord, Discovery, Feeling, StorageEnvelope, Weather } from "../types";
 
-export const STORAGE_KEY = "snally.christmas-hikes.2026";
+const storageKey = (year: number) => `snally.christmas-hikes.${year}`;
+export const STORAGE_KEY = storageKey(challenge.year);
 export const SCHEMA_VERSION = 1 as const;
-export const CHALLENGE_YEAR = 2026 as const;
 
 const feelings: Feeling[] = ["amazing", "happy", "proud", "tired", "challenged"];
 const weatherValues: Weather[] = ["sunny", "cloudy", "windy", "rainy", "snowy", "cold"];
@@ -22,10 +23,6 @@ const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 const isOptionalString = (value: unknown): value is string | undefined =>
   value === undefined || (typeof value === "string" && value.length <= 5000);
-const isDateString = (value: unknown): value is string =>
-  typeof value === "string" &&
-  /^\d{4}-\d{2}-\d{2}$/.test(value) &&
-  !Number.isNaN(Date.parse(`${value}T00:00:00`));
 const isTimeString = (value: unknown): value is string =>
   typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
 const isIsoString = (value: unknown): value is string =>
@@ -33,10 +30,10 @@ const isIsoString = (value: unknown): value is string =>
 const isFiniteInRange = (value: unknown, min: number, max: number): value is number =>
   typeof value === "number" && Number.isFinite(value) && value >= min && value <= max;
 
-export function validateRecord(value: unknown): value is AdventureRecord {
+export function validateRecord(value: unknown, edition = challenge): value is AdventureRecord {
   if (!isObject(value)) return false;
   const validHikeId =
-    typeof value.hikeId === "number" && hikes.some((hike) => hike.id === value.hikeId);
+    typeof value.hikeId === "number" && edition.hikes.some((hike) => hike.id === value.hikeId);
   const validArrays =
     Array.isArray(value.weather) &&
     value.weather.every((item) => weatherValues.includes(item as Weather)) &&
@@ -47,10 +44,15 @@ export function validateRecord(value: unknown): value is AdventureRecord {
     typeof value.completed === "boolean" &&
     validArrays &&
     typeof value.passportStampCollected === "boolean" &&
-    typeof value.juniorRangerBadgeEarned === "boolean" &&
+    (value.juniorRangerBadgeEarned === undefined ||
+      typeof value.juniorRangerBadgeEarned === "boolean") &&
     typeof value.completedEntireHike === "boolean" &&
-    (value.plannedDate === undefined || isDateString(value.plannedDate)) &&
-    (value.completedDate === undefined || isDateString(value.completedDate)) &&
+    (value.spottedFourSquirrels === undefined || typeof value.spottedFourSquirrels === "boolean") &&
+    (value.secondMissionCompleted === undefined ||
+      typeof value.secondMissionCompleted === "boolean") &&
+    (value.missionCompleted === undefined || typeof value.missionCompleted === "boolean") &&
+    (value.plannedDate === undefined || isCalendarDate(value.plannedDate)) &&
+    (value.completedDate === undefined || isCalendarDate(value.completedDate)) &&
     (value.startTime === undefined || isTimeString(value.startTime)) &&
     (value.endTime === undefined || isTimeString(value.endTime)) &&
     (value.actualDistanceMiles === undefined ||
@@ -69,26 +71,29 @@ export function validateRecord(value: unknown): value is AdventureRecord {
   );
 }
 
-export function parseBackup(value: unknown): StorageEnvelope {
+export function parseBackup(value: unknown, edition: Challenge = challenge): StorageEnvelope {
   if (!isObject(value)) throw new Error("This file is not a Six Hikes backup.");
   if (value.schemaVersion !== SCHEMA_VERSION)
     throw new Error("This backup uses an unsupported format.");
-  if (value.challengeYear !== CHALLENGE_YEAR)
+  if (value.challengeYear !== edition.year)
     throw new Error("This backup belongs to a different challenge year.");
-  if (!Array.isArray(value.records) || !value.records.every(validateRecord)) {
+  if (
+    !Array.isArray(value.records) ||
+    !value.records.every((record) => validateRecord(record, edition))
+  ) {
     throw new Error("Some adventure records are missing or invalid.");
   }
   const ids = value.records.map((record) => record.hikeId);
   if (new Set(ids).size !== ids.length)
     throw new Error("This backup contains duplicate adventures.");
-  return { schemaVersion: SCHEMA_VERSION, challengeYear: CHALLENGE_YEAR, records: value.records };
+  return { schemaVersion: SCHEMA_VERSION, challengeYear: edition.year, records: value.records };
 }
 
-export function loadRecords(): { records: AdventureRecord[]; warning?: string } {
+export function loadRecords(edition = challenge): { records: AdventureRecord[]; warning?: string } {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(edition.year));
     if (!raw) return { records: [] };
-    return { records: parseBackup(JSON.parse(raw)).records };
+    return { records: parseBackup(JSON.parse(raw), edition).records };
   } catch {
     return {
       records: [],
@@ -97,15 +102,15 @@ export function loadRecords(): { records: AdventureRecord[]; warning?: string } 
   }
 }
 
-export function saveRecords(records: AdventureRecord[]): void {
+export function saveRecords(records: AdventureRecord[], edition = challenge): void {
   const envelope: StorageEnvelope = {
     schemaVersion: SCHEMA_VERSION,
-    challengeYear: CHALLENGE_YEAR,
+    challengeYear: edition.year,
     records,
   };
-  const validated = parseBackup(envelope);
+  const validated = parseBackup(envelope, edition);
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
+    localStorage.setItem(storageKey(edition.year), JSON.stringify(validated));
   } catch {
     throw new Error(
       "This device could not save your adventure. Check that browser storage is available and has space.",
@@ -113,10 +118,10 @@ export function saveRecords(records: AdventureRecord[]): void {
   }
 }
 
-export function createExport(records: AdventureRecord[]): string {
+export function createExport(records: AdventureRecord[], edition = challenge): string {
   const envelope: StorageEnvelope = {
     schemaVersion: SCHEMA_VERSION,
-    challengeYear: CHALLENGE_YEAR,
+    challengeYear: edition.year,
     exportedAt: new Date().toISOString(),
     records,
   };
@@ -149,10 +154,4 @@ export const formatDate = (value?: string) => {
     : new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(
         date,
       );
-};
-
-export const localToday = () => {
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60_000;
-  return new Date(now.getTime() - offset).toISOString().slice(0, 10);
 };

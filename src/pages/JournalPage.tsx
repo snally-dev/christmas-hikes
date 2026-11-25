@@ -1,21 +1,21 @@
 import {
-  Award,
   BookOpenText,
   CalendarDays,
   Clock3,
   Footprints,
   MapPin,
+  Printer,
   Star,
   Stamp,
 } from "lucide-react";
 import { BadgeImage } from "../components/BadgeImage";
+import { ShareHike } from "../components/ShareHike";
 import { useRecords } from "../context/RecordsContext";
-import { getHikeById } from "../data/hikes";
 import { discoveryOptions, feelingOptions, labelFor, weatherOptions } from "../lib/labels";
 import { formatDate, formatDuration } from "../lib/storage";
 
 export function JournalPage() {
-  const { records } = useRecords();
+  const { records, edition } = useRecords();
   const completed = records
     .filter((record) => record.completed)
     .sort((a, b) => (b.completedDate ?? "").localeCompare(a.completedDate ?? ""));
@@ -25,7 +25,12 @@ export function JournalPage() {
       <header className="page-heading">
         <span className="eyebrow">Stories from the trail</span>
         <h1>Adventure Journal</h1>
-        <p>A keepsake of the paths you walked and the things you found.</p>
+        <p>{edition.year} · A keepsake of the paths you walked and the things you found.</p>
+        {completed.length > 0 && (
+          <button className="button button--secondary print-control" onClick={() => window.print()}>
+            <Printer /> Print journal
+          </button>
+        )}
       </header>
       {!completed.length ? (
         <section className="empty-state">
@@ -41,7 +46,7 @@ export function JournalPage() {
       ) : (
         <div className="timeline">
           {completed.map((record, index) => {
-            const hike = getHikeById(record.hikeId);
+            const hike = edition.hikes.find((item) => item.id === record.hikeId);
             if (!hike) return null;
             const feeling = feelingOptions.find((option) => option.value === record.feeling);
             return (
@@ -67,6 +72,7 @@ export function JournalPage() {
                     </div>
                     <a href={`#record/${hike.slug}`}>Edit</a>
                   </header>
+                  <ShareHike hike={hike} />
                   <div className="journal-stats">
                     <span>
                       <Footprints />{" "}
@@ -128,7 +134,9 @@ export function JournalPage() {
                     </div>
                   )}
                   {(record.passportStampCollected ||
-                    record.juniorRangerBadgeEarned ||
+                    record.missionCompleted ||
+                    record.secondMissionCompleted ||
+                    record.spottedFourSquirrels ||
                     record.completedEntireHike) && (
                     <footer>
                       {record.passportStampCollected && (
@@ -136,11 +144,9 @@ export function JournalPage() {
                           <Stamp /> Passport stamp
                         </span>
                       )}
-                      {record.juniorRangerBadgeEarned && (
-                        <span>
-                          <Award /> Junior Ranger
-                        </span>
-                      )}
+                      {record.missionCompleted && <span>✓ {hike.mission}</span>}
+                      {record.secondMissionCompleted && <span>✓ {hike.secondMission}</span>}
+                      {record.spottedFourSquirrels && <span>✓ Spotted four squirrels</span>}
                       {record.completedEntireHike && <span>✓ Entire hike</span>}
                     </footer>
                   )}

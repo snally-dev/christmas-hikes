@@ -1,0 +1,30 @@
+{
+  "name": "Six Hikes of Christmas",
+  "short_name": "Christmas Hikes",
+  "id": "/christmas-hikes/",
+  "start_url": "/christmas-hikes/",
+  "scope": "/christmas-hikes/",
+  "display": "standalone",
+  "background_color": "#f6f1e5",
+  "theme_color": "#073a29",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

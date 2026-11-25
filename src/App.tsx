@@ -3,7 +3,9 @@ import { Celebration } from "./components/Celebration";
 import { Layout } from "./components/Layout";
 import { AdventureDetailPage } from "./pages/AdventureDetailPage";
 import { AdventuresPage } from "./pages/AdventuresPage";
+import { CertificatePage } from "./pages/CertificatePage";
 import { CollectionPage } from "./pages/CollectionPage";
+import { MissionsPage } from "./pages/MissionsPage";
 import { JournalPage } from "./pages/JournalPage";
 import { RecordPage } from "./pages/RecordPage";
 import { SettingsPage } from "./pages/SettingsPage";
@@ -29,8 +31,14 @@ export default function App() {
 
   let page;
   switch (route.page) {
+    case "missions":
+      page = <MissionsPage />;
+      break;
     case "collection":
       page = <CollectionPage />;
+      break;
+    case "certificate":
+      page = <CertificatePage />;
       break;
     case "journal":
       page = <JournalPage />;
@@ -39,10 +47,10 @@ export default function App() {
       page = <SettingsPage />;
       break;
     case "adventure":
-      page = <AdventureDetailPage slug={route.slug} />;
+      page = <AdventureDetailPage key={route.slug} slug={route.slug} />;
       break;
     case "record":
-      page = <RecordPage slug={route.slug} />;
+      page = <RecordPage key={route.slug} slug={route.slug} />;
       break;
     default:
       page = <AdventuresPage />;

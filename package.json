@@ -7,11 +7,15 @@
     "dev": "vp dev",
     "build": "tsc && vp build",
     "preview": "vp preview",
-    "prepare-assets": "vpx scripts/prepare-assets.ts",
     "test": "vp test run",
-    "check": "vp check"
+    "check": "vp check",
+    "routes:generate": "vpx scripts/process-routes.ts",
+    "dev:private": "vp dev --mode private",
+    "build:private": "tsc && vp build --mode private",
+    "preview:private": "vp preview --mode private"
   },
   "dependencies": {
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -19,12 +23,13 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "^26.6.6",
     "@types/react": "^19.0.3",
     "@types/react-dom": "^19.0.2",
     "@vitejs/plugin-react": "^4.3.4",
     "jsdom": "^25.0.1",
-    "sharp": "^0.35.5",
+    "saxes": "^6.0.0",
     "typescript": "~7.0.2",
     "vite": "catalog:",
     "vite-plus": "catalog:"

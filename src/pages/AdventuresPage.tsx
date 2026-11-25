@@ -1,92 +1,151 @@
-import { Award, CalendarDays, Check, Map, Stamp } from "lucide-react";
+import { CalendarDays, Check, Compass } from "lucide-react";
 import { BadgeImage } from "../components/BadgeImage";
 import { useRecords } from "../context/RecordsContext";
-import { challenge, hikes } from "../data/hikes";
+import { assetUrl, badgeUrl } from "../data/hikes";
+import { allTrailsUrl, useRouteSettings } from "../data/privateRoutes";
+import { seasonStatus } from "../lib/season";
 import { formatDate } from "../lib/storage";
 
+const seasonalHeadings = {
+  before: "Your winter adventure begins soon!",
+  open: "Your winter adventure awaits!",
+  final: "One last day of Christmas adventures!",
+  master: "Christmas Trail Master!",
+  after: "The season has ended, but the adventure continues.",
+};
+
 export function AdventuresPage() {
-  const { records } = useRecords();
-  const completed = records.filter((record) => record.completed);
-  const completedIds = new Set(completed.map((record) => record.hikeId));
-  const totalMiles = completed.reduce((sum, record) => sum + (record.actualDistanceMiles ?? 0), 0);
-  const stamps = completed.filter((record) => record.passportStampCollected).length;
-  const allComplete = completed.length === hikes.length;
+  const { records, edition, today } = useRecords();
+  const { hikes, goal } = edition;
+  const settings = useRouteSettings();
+  const collectionUrl = allTrailsUrl(edition.allTrailsCollectionUrl ?? settings?.collectionUrl);
+  const { phase, daysUntil, daysRemaining, master, stats, remainingMiles } = seasonStatus(
+    edition,
+    records,
+    today,
+  );
+  const encouragement =
+    stats.adventures === 0
+      ? "Pick any trail to start your passport."
+      : stats.adventures < goal
+        ? "Every trail has a new story to bring home."
+        : "Your trail patch collection is full!";
 
   return (
     <div className="page adventures-page">
-      <section className="hero-panel">
+      <section className="hero-panel" aria-labelledby="adventures-title">
+        <img
+          className="passport-logo"
+          src={assetUrl("branding/logo.webp")}
+          width={727}
+          height={644}
+          alt=""
+          fetchPriority="high"
+        />
         <div className="hero-copy">
-          <span className="eyebrow">
-            {challenge.year} {challenge.subtitle}
-          </span>
-          <h1>{challenge.title}</h1>
-          <p>Six trails. Six embroidered badges. One unforgettable National Park adventure.</p>
+          <h1 id="adventures-title" className="visually-hidden">
+            {edition.title}
+          </h1>
+          <span className="eyebrow">{edition.year} Adventure Passport</span>
+          <h2>{seasonalHeadings[phase]}</h2>
+          {master ? (
+            <div className="home-award">
+              <img src={badgeUrl(edition.completionBadge.unlockedImage)} alt="" />
+              <div>
+                <p>Completed {formatDate(master.date)}</p>
+                <a href="#certificate">View your certificate</a>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p>
+                {phase === "after"
+                  ? "Keep exploring and adding badges to your collection."
+                  : encouragement}
+              </p>
+              <p className="season-dates">
+                {phase === "before"
+                  ? `${daysUntil} ${daysUntil === 1 ? "day" : "days"} until ${edition.startLabel ?? formatDate(edition.startDate)}`
+                  : `${formatDate(edition.startDate)} – ${formatDate(edition.endDate)}`}
+              </p>
+            </>
+          )}
         </div>
         <div
-          className="progress-seal"
-          aria-label={`${completed.length} of ${hikes.length} hikes completed`}
+          className="progress-track"
+          role="progressbar"
+          aria-label={`${stats.adventures} of ${goal} hikes completed`}
+          aria-valuenow={stats.adventures}
+          aria-valuemin={0}
+          aria-valuemax={goal}
         >
-          <strong>
-            {completed.length}
-            <span>/6</span>
-          </strong>
-          <small>hikes complete</small>
+          <span style={{ width: `${(stats.adventures / goal) * 100}%` }} />
         </div>
-        <div className="progress-track" aria-hidden="true">
-          <span style={{ width: `${(completed.length / hikes.length) * 100}%` }} />
-        </div>
-        <div className="summary-row">
+        <dl className="summary-row">
           <div>
-            <Map aria-hidden="true" />
-            <span>
-              <strong>{totalMiles.toFixed(1)}</strong> miles hiked
-            </span>
+            <dt>Badges collected</dt>
+            <dd>
+              {stats.adventures} / {goal}
+            </dd>
           </div>
           <div>
-            <Stamp aria-hidden="true" />
-            <span>
-              <strong>{stamps}</strong> passport {stamps === 1 ? "stamp" : "stamps"}
-            </span>
+            <dt>Miles explored</dt>
+            <dd>{stats.miles.toFixed(2)}</dd>
           </div>
           <div>
-            <Award aria-hidden="true" />
-            <span>
-              <strong>{completed.length}</strong> badges earned
-            </span>
+            <dt>Planned miles left</dt>
+            <dd>{remainingMiles.toFixed(2)}</dd>
           </div>
-        </div>
+          <div>
+            <dt>Passport stamps</dt>
+            <dd>{stats.stamps}</dd>
+          </div>
+          {!master && (
+            <div>
+              <dt>Days remaining</dt>
+              <dd>{phase === "before" ? "—" : daysRemaining}</dd>
+            </div>
+          )}
+        </dl>
+        {stats.adventures > 0 && (
+          <p className="mileage-breakdown">
+            {stats.plannedMiles.toFixed(2)} mi from planned routes · {stats.actualMiles.toFixed(2)}{" "}
+            mi recorded in the journal
+          </p>
+        )}
       </section>
-
-      {allComplete && (
-        <section className="master-banner">
-          <Award size={38} aria-hidden="true" />
-          <div>
-            <span className="eyebrow">All six trails conquered</span>
-            <h2>Christmas Trail Master</h2>
-          </div>
-        </section>
-      )}
 
       <section className="section-heading">
         <div>
-          <span className="eyebrow">Choose your trail</span>
-          <h2>Adventure map</h2>
+          <h2>Choose an adventure</h2>
+          <p>
+            {hikes.length} trails · {edition.targetMiles.toFixed(2)} planned miles · Any order
+          </p>
         </div>
-        <p>Hike them in any order.</p>
+        <a className="button button--secondary" href="#missions">
+          <Compass aria-hidden="true" /> Trail missions
+        </a>
       </section>
+
+      {collectionUrl && (
+        <p>
+          <a className="text-link" href={collectionUrl} target="_blank" rel="noreferrer">
+            View AllTrails Collection
+          </a>
+        </p>
+      )}
 
       <div className="adventure-grid">
         {hikes.map((hike, index) => {
           const record = records.find((item) => item.hikeId === hike.id);
-          const earned = completedIds.has(hike.id);
+          const earned = Boolean(record?.completed);
           return (
             <a
               className={`adventure-card ${earned ? "is-complete" : ""}`}
               href={`#adventure/${hike.slug}`}
               key={hike.id}
             >
-              <div className="card-number">{String(index + 1).padStart(2, "0")}</div>
-              <BadgeImage hike={hike} earned={earned} priority={index < 3} />
+              <BadgeImage hike={hike} earned={earned} priority={index < 3} showStatus={false} />
               <div className="adventure-card__copy">
                 <span className={`status-chip ${earned ? "status-chip--earned" : ""}`}>
                   {earned ? (
@@ -94,7 +153,7 @@ export function AdventuresPage() {
                       <Check size={14} /> Completed
                     </>
                   ) : (
-                    "Badge locked"
+                    "Ready to explore"
                   )}
                 </span>
                 <h3>{hike.name}</h3>
@@ -102,7 +161,7 @@ export function AdventuresPage() {
                 <div className="trail-meta">
                   <span>
                     {hike.distanceEstimated ? "≈" : ""}
-                    {hike.distanceMiles} mi
+                    {hike.distanceMiles.toFixed(2)} mi
                   </span>
                   <span>{hike.difficulty}</span>
                 </div>

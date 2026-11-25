@@ -25,3 +25,10 @@ dist-ssr
 !.vscode/
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Supplied source kits
+/temp/
+
+# AllTrails exports and private route artifacts
+/.routes.local/
+/dist-private/
